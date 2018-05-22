@@ -1,3 +1,4 @@
+---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -18,21 +19,37 @@ spec:
         app: cdk-cats
     spec:
       containers:
-      - image: calvinhartwell/cdk-cats:latest
-        imagePullPolicy: ""
-        name: cdk-cats
-        ports:
-        - containerPort: 80
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          timeoutSeconds: 30
-        resources: {}
+        - image: calvinhartwell/cdk-cats:latest
+          imagePullPolicy: ""
+          name: cdk-cats
+          ports:
+            - containerPort: 80
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            timeoutSeconds: 30
+          resources: {}
       restartPolicy: Always
       serviceAccountName: ""
 status: {}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cdk-cats-cluster
+spec:
+  type: ClusterIP
+  selector:
+    app: cdk-cats
+  ports:
+  - name: cdk-cats-port
+    protocol: TCP
+    port: 7070
+    targetPort: 80
+
 
 ---
 apiVersion: v1
