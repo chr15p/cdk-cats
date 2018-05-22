@@ -1,0 +1,14 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+ name: cdk-cats
+spec:
+ rules:
+   - host: cats.51.255.64.68.xip.io
+     http:
+       paths:
+         - path: /
+           backend:
+             serviceName: cdk-cats
+             servicePort: 80
