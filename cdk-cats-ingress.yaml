@@ -8,7 +8,11 @@ spec:
    - host: cats.51.255.64.68.xip.io
      http:
        paths:
-         - path: /
+         - path: /cats
            backend:
              serviceName: cdk-cats
              servicePort: 80
+         - path: /microbot
+           backend:
+             serviceName: microbot
+             servicePort: 8080
