@@ -1,0 +1,54 @@
+1) 
+
+juju ssh kubernetes-master/0
+
+sudo su -l
+
+vi /root/cdk/basic_auth.csv on both the masters;
+
+   i.e: pippo,pippo,pippo
+
+## the password is a plaintext one ##
+
+2) juju run-action kubernetes-master/0 restart
+
+3) kubectl create namespace team1
+
+4) kubectl config set-context team1-context --cluster=juju-cluster --user=pippo
+
+5) test: kubectl --context=team1-context get pods
+
+6) kind: Role
+   apiVersion: rbac.authorization.k8s.io/v1beta1
+   metadata:
+     namespace: team1
+     name: deployment-manager
+   rules:
+   - apiGroups: ["", "extensions", "apps"]
+     resources: ["deployments", "replicasets", "pods"]
+     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # You can also use ["*"]
+
+7) kubectl create -f role-deployment-manager-team1.yaml
+
+8) kind: RoleBinding
+   apiVersion: rbac.authorization.k8s.io/v1beta1
+   metadata:
+     name: deployment-manager-binding
+     namespace: team1
+   subjects:
+   - kind: User
+     name: pippo
+     apiGroup: ""
+   roleRef:
+     kind: Role
+     name: deployment-manager
+     apiGroup: ""
+
+8) kubectl create -f rolebinding-deployment-manager-team1.yaml
+
+9) test: kubectl --context=team1-context run --image bitnami/dokuwiki mydokuwiki
+
+10) test: kubectl --context=team1-context get pods 
+
+11) test: kubectl --context=team1-context get pods --namespace=default
+
