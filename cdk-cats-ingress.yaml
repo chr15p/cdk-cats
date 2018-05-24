@@ -12,7 +12,3 @@ spec:
            backend:
              serviceName: cdk-cats
              servicePort: 80
-         - path: /microbot
-           backend:
-             serviceName: microbot
-             servicePort: 8080
